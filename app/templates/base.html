@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>myPlaylist</title>
+    {% if session.get('theme') == 'dark' %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='style_dark.css') }}">
+    {% else %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='style_white.css') }}">
+    {% endif %}
+</head>
+<body>
+    <nav>
+        <!-- Navbar content -->
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('playlist') }}">My Playlists</a></li>
+            <li><a href="{{ url_for('album') }}">Albums</a></li>
+            <li><a href="{{ url_for('favorite_music') }}">Favorite Music</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+        </ul>
+
+        <!-- Search form -->
+        <form action="{{ url_for('search') }}" method="GET">
+            <input type="text" name="query" placeholder="Search...">
+            <button type="submit">Search</button>
+        </form>
+    </nav>
+
+    <!-- Content -->
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+        <!-- Footer content -->
+        <p>© 2023 myPlaylist. All rights reserved.</p>
+    </footer>
+</body>
+</html>
