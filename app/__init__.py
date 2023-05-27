@@ -1,6 +1,6 @@
 import urllib
 import requests
-from flask import Flask, redirect, url_for, session, request
+from flask import Flask, redirect, url_for, session, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
 
@@ -48,6 +48,7 @@ def create_app():
         playlists = ytmusic.get_library_playlists()
 
         # Process the playlists data or render a template
+        return render_template('ytmusic_playlists.html', playlists=playlists)
 
     @app.route('/ytmusic/auth')
     def authenticate_ytmusic():
