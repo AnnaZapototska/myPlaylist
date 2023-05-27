@@ -1,16 +1,16 @@
-from flask import Flask, redirect, url_for, session
+import urllib
+import requests
+from flask import Flask, redirect, url_for, session, request
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
 
 db = SQLAlchemy()
 ytmusic = None  # Global variable to hold the YTMusic client object
 
-
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'xyzsdfg'
-    app.config[
-        'SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize the database
@@ -31,22 +31,66 @@ def create_app():
         session.clear()
         return redirect(url_for('login.login'))
 
+    @app.route('/ytmusic/playlists')
+    def show_ytmusic_playlists():
+        if 'access_token' not in session:
+            return redirect(url_for('login.login'))
+
+        # Get the access token from the session
+        access_token = session['access_token']
+
+        # Initialize the YTMusic client
+        ytmusic = YTMusic()
+        ytmusic.headers['Authorization'] = f'Bearer {access_token}'
+
+        # Get the user's playlists
+        playlists = ytmusic.get_library_playlists()
+
+        # Process the playlists data or render a template
+
+    @app.route('/ytmusic/auth')
+    def authenticate_ytmusic():
+        # Redirect the user to YouTube for authentication
+        auth_url = 'https://accounts.google.com/o/oauth2/auth'
+        params = {
+            'client_id': '866143699543-g80lda2kbtp9ci0gskh3em31vvf2t0l0.apps.googleusercontent.com',
+            'redirect_uri': request.url_root + 'ytmusic/callback',
+            'scope': 'https://www.googleapis.com/auth/youtube.force-ssl',
+            'response_type': 'code',
+            'access_type': 'offline',
+            'prompt': 'consent',
+        }
+        auth_redirect = auth_url + '?' + urllib.parse.urlencode(params)
+        return redirect(auth_redirect)
+
+    @app.route('/ytmusic/callback')
+    def handle_ytmusic_callback():
+        # Handle the callback from YouTube after authentication
+        auth_code = request.args.get('code')
+
+        # Exchange the authorization code for an access token
+        token_endpoint = 'https://accounts.google.com/o/oauth2/token'
+        data = {
+            'code': auth_code,
+            'client_id': '866143699543-g80lda2kbtp9ci0gskh3em31vvf2t0l0.apps.googleusercontent.com',
+            'client_secret': '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',
+            'redirect_uri': request.url_root + 'ytmusic/callback',
+            'grant_type': 'authorization_code'
+        }
+        response = requests.post(token_endpoint, data=data)
+        token_data = response.json()
+        access_token = token_data.get('access_token')
+
+        # Store the access token in the session for future use
+        session['access_token'] = access_token
+
+        return redirect(url_for('show_ytmusic_playlists'))
+
     @app.teardown_appcontext
     def teardown_appcontext(error):
         db.session.remove()
 
     with app.app_context():
         db.create_all()
-        initialize_ytmusic_client()
 
     return app
-
-
-def initialize_ytmusic_client():
-    global ytmusic
-
-    # Initialize the YTMusic client
-    ytmusic = YTMusic()
-
-    # You can now use the 'ytmusic' object to interact with the YouTube Music API
-
