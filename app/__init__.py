@@ -40,6 +40,7 @@ def create_app():
         access_token = session['access_token']
 
         # Initialize the YTMusic client
+        global ytmusic
         ytmusic = YTMusic()
         ytmusic.headers['Authorization'] = f'Bearer {access_token}'
 

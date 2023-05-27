@@ -9,4 +9,4 @@ handle_playlist = Blueprint('playlist', __name__)
 def playlist():
     # Retrieve and display user's playlists
     # Implement authentication check before accessing this page
-    return render_template('playlist.html')
+    return render_template('ytmusic_playlists.html')

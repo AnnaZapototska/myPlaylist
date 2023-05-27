@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>YouTube Music Playlists</title>
+</head>
+<body>
+    <h1>YouTube Music Playlists</h1>
+    <ul>
+        {% for playlist in playlists %}
+            <li>
+                <h3>{{ playlist['title'] }}</h3>
+                <img src="{{ playlist['thumbnail'] }}" alt="Playlist Thumbnail">
+                <p>{{ playlist['description'] }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
