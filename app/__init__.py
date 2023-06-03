@@ -114,6 +114,7 @@ def create_app():
             headers = {'Authorization': f'Bearer {access_token}'}
             response = requests.get(user_info_url, headers=headers)
             user_info_data = response.json()
+            print("User data", user_info_data)
             user_id = user_info_data['id']
 
             # Store the access token, refresh token, and user ID in the session
