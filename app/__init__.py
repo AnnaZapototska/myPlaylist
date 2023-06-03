@@ -8,10 +8,12 @@ from urllib import parse
 db = SQLAlchemy()
 ytmusic = None  # Global variable to hold the YTMusic client object
 
+
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'xyzsdfg'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
+    app.config[
+        'SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize the database
@@ -37,18 +39,24 @@ def create_app():
         if 'access_token' not in session:
             return redirect(url_for('login.login'))
 
-        # Get the access token from the session
-        access_token = session['access_token']
+        try:
+            # Get the access token from the session
+            access_token = session['access_token']
 
-        # Initialize the YTMusic client
-        ytmusic = YTMusic()
-        ytmusic.headers['Authorization'] = f'Bearer {access_token}'
+            # Initialize the YTMusic client
+            ytmusic = YTMusic()
+            ytmusic.headers['Authorization'] = f'Bearer {access_token}'
 
-        # Get the user's playlists
-        playlists = ytmusic.get_library_playlists()
+            # Get the user's playlists
+            playlists = ytmusic.get_library_playlists()
+            print(playlists)
 
-        # Process the playlists data or render a template
-        return render_template('ytmusic_playlists.html', playlists=playlists)
+            # Process the playlists data or render a template
+            return render_template('ytmusic_playlists.html', playlists=playlists)
+
+        except Exception as e:
+            print(f"Error: {e}")
+            return "An error occurred while retrieving playlists. Please try again later."
 
     @app.route('/ytmusic/auth')
     def authenticate_ytmusic():
