@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
 from urllib import parse
 from ytmusicapi import setup
+import json
 
 db = SQLAlchemy()
 ytmusic = None  # Global variable to hold the YTMusic client object
@@ -46,7 +47,8 @@ def create_app():
 
             # Initialize the YTMusic client
             ytmusic = YTMusic()
-            ytmusic.setup(filepath=".headers_auth.json", headers_raw={"Authorization": f"Bearer {access_token}"})
+            ytmusic.setup(filepath=".headers_auth.json",
+                          headers_raw=json.dumps({"Authorization": f"Bearer {access_token}"}))
 
             # Get the user's playlists
             playlists = ytmusic.get_library_playlists(limit=None)  # Retrieve all playlists
