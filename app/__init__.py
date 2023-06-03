@@ -42,6 +42,7 @@ def create_app():
         try:
             # Get the access token from the session
             access_token = session['access_token']
+            print(f"Access Token: {access_token}")  # Print the access token for debugging
 
             # Initialize the YTMusic client
             ytmusic = YTMusic()
@@ -54,7 +55,6 @@ def create_app():
             return render_template('ytmusic_playlists.html', playlists=playlists)
 
         except Exception as e:
-        
             import traceback
             print(f"Error: {e}")
             traceback.print_exc()
