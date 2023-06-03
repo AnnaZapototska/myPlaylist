@@ -57,9 +57,7 @@ def create_app():
             global ytmusic
             ytmusic = YTMusic()
             ytmusic.setup(filepath=".headers_auth.json",
-                          headers_raw={"Authorization": f"Bearer {access_token}",
-                                       "Cookie": f"session_id={session_id}",
-                                       "x-goog-authuser": str(user_id)})
+                          headers_raw=f"Authorization: Bearer {access_token}\nCookie: session_id={session_id}\nx-goog-authuser: {user_id}")
 
             # Get the user's playlists
             playlists = ytmusic.get_library_playlists(limit=None)
