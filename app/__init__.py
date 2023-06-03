@@ -14,7 +14,8 @@ ytmusic = None  # Global variable to hold the YTMusic client object
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'xyzsdfg'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
+    app.config[
+        'SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize the database
@@ -37,18 +38,19 @@ def create_app():
 
     @app.route('/ytmusic/playlists')
     def show_ytmusic_playlists():
-        if 'access_token' not in session:
+        if 'access_token' not in session or 'user_id' not in session:
             return redirect(url_for('login.login'))
 
         try:
-            # Get the access token from the session
+            # Get the access token and user ID from the session
             access_token = session['access_token']
+            user_id = session['user_id']
             print(f"Access Token: {access_token}")  # Print the access token for debugging
 
-            # Initialize the YTMusic client
+            # Initialize the YTMusic client with the user ID
             ytmusic = YTMusic()
             ytmusic.setup(filepath=".headers_auth.json",
-                          headers_raw=json.dumps({"Authorization": f"Bearer {access_token}"}))
+                          headers_raw={"Authorization": f"Bearer {access_token}", "x-goog-authuser": user_id})
 
             # Get the user's playlists
             playlists = ytmusic.get_library_playlists(limit=None)  # Retrieve all playlists
@@ -95,8 +97,16 @@ def create_app():
         token_data = response.json()
         access_token = token_data.get('access_token')
 
-        # Store the access token in the session for future use
+        # Retrieve the user profile information
+        profile_endpoint = 'https://www.googleapis.com/oauth2/v2/userinfo'
+        headers = {'Authorization': f'Bearer {access_token}'}
+        profile_response = requests.get(profile_endpoint, headers=headers)
+        profile_data = profile_response.json()
+        user_id = profile_data.get('id')
+
+        # Store the access token and user ID in the session for future use
         session['access_token'] = access_token
+        session['user_id'] = user_id
 
         return redirect(url_for('show_ytmusic_playlists'))
 
