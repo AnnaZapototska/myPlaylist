@@ -18,8 +18,9 @@ def create_app():
     db.init_app(app)
 
     # Import and register your blueprints
-    from app.controllers.login import login
-    app.register_blueprint(login)
+    from app.controllers.login import handle_login, handle_register
+    app.register_blueprint(handle_login)
+    app.register_blueprint(handle_register)
 
     # Define your routes
     @app.route('/')

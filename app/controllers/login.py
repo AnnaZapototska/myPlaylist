@@ -1,12 +1,14 @@
-from flask import Blueprint, render_template, request, session, redirect, url_for
+from flask import Blueprint, render_template, request, session, redirect
 from app import db
 from app.models.user import User
 import hashlib
+import urllib.parse
 
-login_blueprint = Blueprint('login', __name__)
+handle_login = Blueprint('login', __name__)
+handle_register = Blueprint('register', __name__)
 
 
-@login_blueprint.route('/login', methods=['GET', 'POST'])
+@handle_login.route('/login', methods=['GET', 'POST'])
 def login():
     message = ''
     if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
@@ -20,13 +22,13 @@ def login():
             session['name'] = user.name
             session['email'] = user.email
             message = 'Logged in successfully!'
-            return redirect(url_for('show_ytmusic_playlists'))  # Redirect to the playlists page
+            return redirect('/ytmusic/auth')  # Redirect to the /ytmusic/auth route
         else:
             message = 'Please enter correct email/password!'
     return render_template('login.html', message=message)
 
 
-@login_blueprint.route('/register', methods=['GET', 'POST'])
+@handle_login.route('/register', methods=['GET', 'POST'])
 def register():
     message = ''
     if request.method == 'POST' and 'name' in request.form and 'password' in request.form and 'email' in request.form:
