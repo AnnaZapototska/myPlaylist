@@ -100,11 +100,11 @@ def create_app():
         token_params = {
             'client_id': '866143699543-u6erre60j3agevops0q2kfi9j1j9k6mh.apps.googleusercontent.com',
             'client_secret': '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',
-            'redirect_uri': request.url_root + 'ytmusic/callback',
+            'redirect_uri': 'https://my-playlist-project.onrender.com/ytmusic/callback',
             'code': code,
             'grant_type': 'authorization_code',
         }
-        print("check 1")
+        print("check token_params", token_params)
         response = requests.post(token_url, data=token_params)
         print("check 1", response)
         if response.status_code == 200:
