@@ -115,10 +115,7 @@ def create_app():
 
             # Get the user's ID from the access token
             user_info_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
-            headers = {
-                'Authorization': f'Bearer {access_token}',
-                'Content-Type': 'application/json'
-            }
+            headers = {'Authorization': f'Bearer {access_token}'}
             response = requests.get(user_info_url, headers=headers)
             user_info_data = response.json()
             print("User data", user_info_data)
