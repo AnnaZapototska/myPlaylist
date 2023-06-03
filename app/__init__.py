@@ -6,16 +6,19 @@ from ytmusicapi import YTMusic
 from urllib import parse
 from ytmusicapi import setup
 import json
+import secrets
 
 db = SQLAlchemy()
 ytmusic = None  # Global variable to hold the YTMusic client object
 
+def generate_session_id():
+    # Generate a unique session ID (cookie value) using secrets module
+    return secrets.token_hex(16)
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'xyzsdfg'
-    app.config[
-        'SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize the database
@@ -45,16 +48,21 @@ def create_app():
             # Get the access token and user ID from the session
             access_token = session['access_token']
             user_id = session['user_id']
-            print(f"Access Token: {access_token}")  # Print the access token for debugging
+            session_id = session.get('session_id')  # Retrieve the unique session ID (cookie value)
+
+            print(f"Access Token: {access_token}")
+            print(f"Session ID: {session_id}")
 
             # Initialize the YTMusic client with the user ID
             global ytmusic
             ytmusic = YTMusic()
             ytmusic.setup(filepath=".headers_auth.json",
-                          headers_raw={"Authorization": f"Bearer {access_token}", "x-goog-authuser": [user_id]})
+                          headers_raw={"Authorization": f"Bearer {access_token}",
+                                       "Cookie": f"session_id={session_id}",
+                                       "x-goog-authuser": str(user_id)})
 
             # Get the user's playlists
-            playlists = ytmusic.get_library_playlists(limit=None)  # Retrieve all playlists
+            playlists = ytmusic.get_library_playlists(limit=None)
 
             # Process the playlists data or render a template
             return render_template('ytmusic_playlists.html', playlists=playlists)
@@ -63,8 +71,7 @@ def create_app():
             import traceback
             print(f"Error: {e}")
             traceback.print_exc()
-            return "An error occurred while retrieving playlists."
-
+            return "An error occurred while retrieving playlists. Please try again later."
 
     @app.route('/ytmusic/auth')
     def authenticate_ytmusic():
@@ -79,6 +86,10 @@ def create_app():
             'prompt': 'consent',
         }
         auth_redirect = auth_url + '?' + urllib.parse.urlencode(params)
+
+        # Generate and set a unique session ID (cookie value)
+        session['session_id'] = generate_session_id()
+
         return redirect(auth_redirect)
 
     @app.route('/ytmusic/callback')
