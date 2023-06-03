@@ -48,6 +48,7 @@ def create_app():
             print(f"Access Token: {access_token}")  # Print the access token for debugging
 
             # Initialize the YTMusic client with the user ID
+            global ytmusic
             ytmusic = YTMusic()
             ytmusic.setup(filepath=".headers_auth.json",
                           headers_raw={"Authorization": f"Bearer {access_token}", "x-goog-authuser": [user_id]})
@@ -62,8 +63,8 @@ def create_app():
             import traceback
             print(f"Error: {e}")
             traceback.print_exc()
-            return "An error occurred while retrieving playlists. Please try again later."
-        
+            return "An error occurred while retrieving playlists."
+
 
     @app.route('/ytmusic/auth')
     def authenticate_ytmusic():
