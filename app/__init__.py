@@ -54,7 +54,10 @@ def create_app():
             return render_template('ytmusic_playlists.html', playlists=playlists)
 
         except Exception as e:
+        
+            import traceback
             print(f"Error: {e}")
+            traceback.print_exc()
             return "An error occurred while retrieving playlists. Please try again later."
 
     @app.route('/ytmusic/auth')
