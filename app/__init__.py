@@ -102,8 +102,8 @@ def create_app():
         # Exchange the authorization code for an access token
         token_url = 'https://oauth2.googleapis.com/token'
         token_params = {
-            'client_id': '866143699543-u6erre60j3agevops0q2kfi9j1j9k6mh.apps.googleusercontent.com',
-            'client_secret': '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',
+            'client_id': '866143699543-g80lda2kbtp9ci0gskh3em31vvf2t0l0.apps.googleusercontent.com',
+            'client_secret': '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',
             'redirect_uri': 'https://my-playlist-project.onrender.com/ytmusic/callback',
             'code': code,
             'grant_type': 'authorization_code',
