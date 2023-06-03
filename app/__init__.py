@@ -114,22 +114,27 @@ def create_app():
 
             # Get the user's ID from the access token
             user_info_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
-            headers = {'Authorization': f'Bearer {access_token}'}
+            headers = {
+                'Authorization': f'Bearer {access_token}',
+                'Content-Type': 'application/json'
+            }
             response = requests.get(user_info_url, headers=headers)
             user_info_data = response.json()
             print("User data", user_info_data)
-            user_id = user_info_data['id']
-            print("check 3")
 
-            # Store the access token, refresh token, and user ID in the session
-            session['access_token'] = access_token
-            session['refresh_token'] = refresh_token
-            session['user_id'] = user_id
+            if 'id' in user_info_data:
+                user_id = user_info_data['id']
+                print("User ID:", user_id)
+                # Store the access token, refresh token, and user ID in the session
+                session['access_token'] = access_token
+                session['refresh_token'] = refresh_token
+                session['user_id'] = user_id
 
-            print("check 4")
+                print("check 3")
 
-            return redirect(url_for('show_ytmusic_playlists'))
-
+                return redirect(url_for('show_ytmusic_playlists'))
+            else:
+                return "User ID not found in response."
         else:
             return "Error occurred during authentication."
 
