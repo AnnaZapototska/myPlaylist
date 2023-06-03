@@ -3,6 +3,7 @@ import requests
 from flask import Flask, redirect, url_for, session, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
+from urllib import parse
 
 db = SQLAlchemy()
 ytmusic = None  # Global variable to hold the YTMusic client object
@@ -17,9 +18,8 @@ def create_app():
     db.init_app(app)
 
     # Import and register your blueprints
-    from app.controllers.login import handle_login, handle_register
-    app.register_blueprint(handle_login)
-    app.register_blueprint(handle_register)
+    from app.controllers.login import login
+    app.register_blueprint(login)
 
     # Define your routes
     @app.route('/')
@@ -40,12 +40,11 @@ def create_app():
         access_token = session['access_token']
 
         # Initialize the YTMusic client
-        global ytmusic
         ytmusic = YTMusic()
         ytmusic.headers['Authorization'] = f'Bearer {access_token}'
 
         # Get the user's playlists
-        playlists = YTMusic.get_library_playlists()
+        playlists = ytmusic.get_library_playlists()
 
         # Process the playlists data or render a template
         return render_template('ytmusic_playlists.html', playlists=playlists)
