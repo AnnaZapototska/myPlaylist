@@ -1,12 +1,11 @@
+import secrets
 import urllib
+from urllib import parse
+
 import requests
 from flask import Flask, redirect, url_for, session, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
-from urllib import parse
-from ytmusicapi import setup
-import json
-import secrets
 
 db = SQLAlchemy()
 ytmusic = None  # Global variable to hold the YTMusic client object
@@ -50,6 +49,7 @@ def create_app():
             user_id = session['user_id']
             session_id = session.get('session_id')  # Retrieve the unique session ID (cookie value)
 
+            print(f"User id: {user_id}")
             print(f"Access Token: {access_token}")
             print(f"Session ID: {session_id}")
 
