@@ -92,34 +92,38 @@ def create_app():
 
     @app.route('/ytmusic/callback')
     def handle_ytmusic_callback():
-        # Handle the callback from YouTube after authentication
-        auth_code = request.args.get('code')
+        code = request.args.get('code')
 
         # Exchange the authorization code for an access token
-        token_endpoint = 'https://accounts.google.com/o/oauth2/token'
-        data = {
-            'code': auth_code,
+        token_url = 'https://oauth2.googleapis.com/token'
+        token_params = {
             'client_id': '866143699543-g80lda2kbtp9ci0gskh3em31vvf2t0l0.apps.googleusercontent.com',
-            'client_secret': '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',
+            'client_secret': 'NjiuzmHszf8gJ_4cODe4vEqL',
             'redirect_uri': request.url_root + 'ytmusic/callback',
-            'grant_type': 'authorization_code'
+            'code': code,
+            'grant_type': 'authorization_code',
         }
-        response = requests.post(token_endpoint, data=data)
-        token_data = response.json()
-        access_token = token_data.get('access_token')
+        response = requests.post(token_url, data=token_params)
+        if response.status_code == 200:
+            token_data = response.json()
+            access_token = token_data['access_token']
+            refresh_token = token_data['refresh_token']
 
-        # Retrieve the user profile information
-        profile_endpoint = 'https://www.googleapis.com/oauth2/v2/userinfo'
-        headers = {'Authorization': f'Bearer {access_token}'}
-        profile_response = requests.get(profile_endpoint, headers=headers)
-        profile_data = profile_response.json()
-        user_id = profile_data.get('id')
+            # Get the user's ID from the access token
+            user_info_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
+            headers = {'Authorization': f'Bearer {access_token}'}
+            response = requests.get(user_info_url, headers=headers)
+            user_info_data = response.json()
+            user_id = user_info_data['id']
 
-        # Store the access token and user ID in the session for future use
-        session['access_token'] = access_token
-        session['user_id'] = user_id
+            # Store the access token, refresh token, and user ID in the session
+            session['access_token'] = access_token
+            session['refresh_token'] = refresh_token
+            session['user_id'] = user_id
 
-        return redirect(url_for('show_ytmusic_playlists'))
+            return redirect(url_for('show_ytmusic_playlists'))
+        else:
+            return "Error occurred during authentication."
 
     @app.teardown_appcontext
     def teardown_appcontext(error):
