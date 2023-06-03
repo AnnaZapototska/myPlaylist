@@ -111,7 +111,8 @@ def create_app():
         print("check token_params", token_url)
 
         response = requests.post(token_url, data=token_params)
-        print("check 1", response.headers)
+        print(response.json())
+
         if response.status_code == 200:
             token_data = response.json()
             access_token = token_data['access_token']
