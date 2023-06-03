@@ -48,8 +48,7 @@ def create_app():
             ytmusic.headers['Authorization'] = f'Bearer {access_token}'
 
             # Get the user's playlists
-            playlists = ytmusic.get_library_playlists()
-            print(playlists)
+            playlists = ytmusic.get_library_playlists(limit=None)  # Retrieve all playlists
 
             # Process the playlists data or render a template
             return render_template('ytmusic_playlists.html', playlists=playlists)
