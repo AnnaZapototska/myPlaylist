@@ -99,7 +99,7 @@ def create_app():
         code = request.args.get('code')
         print("Start")
 
-        with open('clientAPI.json', 'r') as f:
+        with open('app/clientAPI.json', 'r') as f:
             config_data = json.load(f)
 
         # Retrieve the client ID
