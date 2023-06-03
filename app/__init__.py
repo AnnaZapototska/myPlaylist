@@ -108,10 +108,8 @@ def create_app():
             'code': code,
             'grant_type': 'authorization_code',
         }
-        print("check token_params", token_url)
 
         response = requests.post(token_url, data=token_params)
-        print(response.json())
 
         if response.status_code == 200:
             token_data = response.json()
@@ -121,6 +119,7 @@ def create_app():
 
             # Get the user's ID from the access token
             user_info_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
+            print(access_token)
             headers = {'Authorization': f'Bearer {access_token}'}
             response = requests.get(user_info_url, headers=headers)
             user_info_data = response.json()
