@@ -4,6 +4,7 @@ from flask import Flask, redirect, url_for, session, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
 from urllib import parse
+from ytmusicapi import setup
 
 db = SQLAlchemy()
 ytmusic = None  # Global variable to hold the YTMusic client object
@@ -12,8 +13,7 @@ ytmusic = None  # Global variable to hold the YTMusic client object
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'xyzsdfg'
-    app.config[
-        'SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize the database
@@ -46,7 +46,7 @@ def create_app():
 
             # Initialize the YTMusic client
             ytmusic = YTMusic()
-            ytmusic.headers['Authorization'] = f'Bearer {access_token}'
+            ytmusic.setup(filepath=".headers_auth.json", headers_raw={"Authorization": f"Bearer {access_token}"})
 
             # Get the user's playlists
             playlists = ytmusic.get_library_playlists(limit=None)  # Retrieve all playlists
