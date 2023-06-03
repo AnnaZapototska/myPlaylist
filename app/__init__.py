@@ -6,18 +6,22 @@ import requests
 from flask import Flask, redirect, url_for, session, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
+import json
 
 db = SQLAlchemy()
 ytmusic = None  # Global variable to hold the YTMusic client object
+
 
 def generate_session_id():
     # Generate a unique session ID (cookie value) using secrets module
     return secrets.token_hex(16)
 
+
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'xyzsdfg'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
+    app.config[
+        'SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_playlist_db_user:EtHWfr5hUqZDgchZYjxMGxTVs8kntOhZ@dpg-chocr6m7avja2d8c50n0-a.oregon-postgres.render.com/my_playlist_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize the database
@@ -95,12 +99,26 @@ def create_app():
         code = request.args.get('code')
         print("Start")
 
+        with open('clientAPI.json', 'r') as f:
+            config_data = json.load(f)
+
+        # Retrieve the client ID
+        client_id = config_data['web']['client_id']
+        print("Client ID:", client_id)
+
+        # Retrieve other data as needed
+        project_id = config_data['web']['project_id']
+        auth_uri = config_data['web']['auth_uri']
+        token_uri = config_data['web']['token_uri']
+        client_secret = config_data['web']['client_secret']
+        redirect_uris = config_data['web']['redirect_uris']
+
         # Exchange the authorization code for an access token
-        token_url = 'https://oauth2.googleapis.com/token'
+        token_url = token_uri
         token_params = {
-            'client_id': '866143699543-u6erre60j3agevops0q2kfi9j1j9k6mh.apps.googleusercontent.com',
-            'client_secret': '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',
-            'redirect_uri': 'https://my-playlist-project.onrender.com/ytmusic/callback',
+            'client_id': client_id,
+            'client_secret': client_secret,
+            'redirect_uri': redirect_uris,
             'code': code,
             'grant_type': 'authorization_code',
         }
@@ -114,7 +132,7 @@ def create_app():
             print("check 2")
 
             # Get the user's ID from the access token
-            user_info_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
+            user_info_url = auth_uri
             headers = {'Authorization': f'Bearer {access_token}'}
             response = requests.get(user_info_url, headers=headers)
             user_info_data = response.json()

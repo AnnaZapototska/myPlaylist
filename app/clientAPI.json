@@ -1,1 +1,13 @@
-{"web":{"client_id":"866143699543-u6erre60j3agevops0q2kfi9j1j9k6mh.apps.googleusercontent.com","project_id":"my-playlist-387922","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"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","redirect_uris":["https://my-playlist-project.onrender.com/ytmusic/callback"]}}
+{
+  "web": {
+    "client_id": "866143699543-u6erre60j3agevops0q2kfi9j1j9k6mh.apps.googleusercontent.com",
+    "project_id": "my-playlist-387922",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": [
+      "https://my-playlist-project.onrender.com/ytmusic/callback"
+    ]
+  }
+}
