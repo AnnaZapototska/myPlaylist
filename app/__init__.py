@@ -98,7 +98,7 @@ def create_app():
         token_url = 'https://oauth2.googleapis.com/token'
         token_params = {
             'client_id': '866143699543-g80lda2kbtp9ci0gskh3em31vvf2t0l0.apps.googleusercontent.com',
-            'client_secret': 'NjiuzmHszf8gJ_4cODe4vEqL',
+            'client_secret': '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',
             'redirect_uri': request.url_root + 'ytmusic/callback',
             'code': code,
             'grant_type': 'authorization_code',
