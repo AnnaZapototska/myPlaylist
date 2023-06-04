@@ -119,9 +119,8 @@ def create_app():
             user_info_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
             headers = {'Authorization': 'Bearer ' + access_token}
             response = requests.get(user_info_url, headers=headers)
-            print("User data", requests.get(user_info_url, headers=headers))
             user_info_data = response.json()
-            print("User data", response)
+            print("User data", user_info_data)
 
             if 'id' in user_info_data:
                 user_id = user_info_data['id']
