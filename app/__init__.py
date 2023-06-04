@@ -97,6 +97,7 @@ def create_app():
     @app.route('/ytmusic/callback')
     def handle_ytmusic_callback():
         code = request.args.get('code')
+        session['session_id'] = generate_session_id()
 
         # Exchange the authorization code for an access token
         token_url = 'https://oauth2.googleapis.com/token'
@@ -122,8 +123,10 @@ def create_app():
             user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
             headers = {
                 'Authorization': 'Bearer ' + access_token,
-                'Content-type': 'application/json',  # Set the Content-type heade
+                'Content-type': 'application/json',
+                'Cookie': session['session_id'],
             }
+
             print(headers)
             response = requests.get(user_info_url, headers=headers)
             user_info_data = response.json()
