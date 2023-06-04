@@ -109,7 +109,8 @@ def create_app():
             'grant_type': 'authorization_code',
         }
 
-        response = requests.post(token_url, data=token_params)
+        # response = requests.post(token_url, data=token_params)
+        response = requests.post(token_url, json=token_params)
 
         if response.status_code == 200:
             token_data = response.json()
@@ -124,7 +125,7 @@ def create_app():
             headers = {
                 'Authorization': 'Bearer ' + access_token,
                 'Content-type': 'application/json',
-                'Cookie': session['session_id'],
+                'Cookie': 'session_id=' + session['session_id'],
             }
 
             print(headers)
