@@ -111,14 +111,13 @@ def create_app():
 
         # response = requests.post(token_url, data=token_params)
         response = requests.post(token_url, json=token_params)
+        print(response.status_code)
+        print(response.content)
 
         if response.status_code == 200:
             token_data = response.json()
             access_token = token_data['access_token']
             refresh_token = token_data['refresh_token']
-
-            print("tokens", refresh_token, access_token)
-            print("data", token_data)
 
             # Get the user's ID from the access token
             user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
@@ -128,7 +127,6 @@ def create_app():
                 'Cookie': 'session_id=' + session['session_id'],
             }
 
-            print(headers)
             response = requests.get(user_info_url, headers=headers)
             user_info_data = response.json()
             print("User data", user_info_data)
