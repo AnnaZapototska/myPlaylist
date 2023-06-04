@@ -4,7 +4,7 @@ from flask import Flask, redirect, url_for, session, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
 import json
-from oauth import authenticate_ytmusic, handle_ytmusic_callback
+from app.oauth import authenticate_ytmusic, handle_ytmusic_callback
 
 db = SQLAlchemy()
 ytmusic = None  # Global variable to hold the YTMusic client object
