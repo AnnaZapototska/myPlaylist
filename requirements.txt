@@ -43,4 +43,5 @@ urllib3==1.26.15
 Werkzeug
 WTForms==3.0.1
 zipp==3.15.0
-ytmusicapi
+ytmusicapi~=1.0.2
+google

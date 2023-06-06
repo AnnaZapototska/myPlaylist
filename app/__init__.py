@@ -3,6 +3,7 @@ import urllib
 from urllib import parse
 
 import requests
+from google.auth.transport import requests
 from flask import Flask, redirect, url_for, session, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
@@ -109,7 +110,6 @@ def create_app():
             'grant_type': 'authorization_code',
         }
 
-        # response = requests.post(token_url, data=token_params)
         response = requests.post(token_url, json=token_params)
         print(response.status_code)
         print(response.content)
