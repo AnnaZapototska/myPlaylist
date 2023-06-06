@@ -3,7 +3,7 @@ import urllib
 from urllib import parse
 
 import requests
-from google.auth.transport import requests
+
 from flask import Flask, redirect, url_for, session, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
