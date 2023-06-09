@@ -126,7 +126,7 @@ def create_app():
             response = requests.get(user_info_url, headers=headers)
             user_info_data = response.json()
 
-            print('check data', user_info_data)
+            print('check data', headers)
 
             if 'id' in user_info_data:
                 user_id = user_info_data['id']
