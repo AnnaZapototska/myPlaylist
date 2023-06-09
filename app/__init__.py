@@ -128,7 +128,7 @@ def create_app():
                 session['refresh_token'] = refresh_token
 
                 # Create a new instance of YTMusic with authentication
-                ytmusic = ytmusicapi.YTMusic(auth=session['access_token'])
+                ytmusic = ytmusicapi.YTMusic(session['access_token'], language='en')
 
                 try:
                     playlists = ytmusic.get_library_playlists()
@@ -143,6 +143,7 @@ def create_app():
                 return "Access token is missing in the response data."
         else:
             return "Error occurred during authentication."
+
 
     @app.teardown_appcontext
     def teardown_appcontext(error):
