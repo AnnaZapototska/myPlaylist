@@ -19,12 +19,6 @@ def generate_session_id():
     return secrets.token_hex(16)
 
 
-def load_credentials():
-    with open('clientAPI.json') as file:
-        credentials = json.load(file)
-    return credentials
-
-
 def create_app():
     app = Flask(__name__)
     app.secret_key = 'xyzsdfg'
@@ -107,17 +101,12 @@ def create_app():
         code = request.args.get('code')
         session['session_id'] = generate_session_id()
 
-        credentials = load_credentials()
-        client_id = credentials['web']['client_id']
-        client_secret = credentials['web']['client_secret']
-        redirect_uri = credentials['web']['redirect_uris'][0]
-
         # Exchange the authorization code for an access token
         token_url = 'https://oauth2.googleapis.com/token'
         token_params = {
-            'client_id': client_id,
-            'client_secret': client_secret,
-            'redirect_uri': redirect_uri,
+            'client_id': '866143699543-g80lda2kbtp9ci0gskh3em31vvf2t0l0.apps.googleusercontent.com',
+            'client_secret': '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',
+            'redirect_uri': 'https://my-playlist-project.onrender.com',
             'code': code,
             'grant_type': 'authorization_code',
         }
@@ -154,37 +143,38 @@ def create_app():
         else:
             return "Error occurred during authentication."
 
-    # if response.status_code == 200:
-    #     token_data = response.json()
-    #     access_token = token_data['access_token']
-    #     refresh_token = token_data['refresh_token']
-    #
-    #     # Get the user's ID from the access token
-    #     user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
-    #     headers = {
-    #         'Authorization': 'Bearer ' + access_token,
-    #     }
-    #
-    #     print("token1:", access_token)
-    #     print("token2:", refresh_token)
-    #     response = requests.get(user_info_url, headers=headers)
-    #     print("Response content:", response.content)
-    #     user_info_data = response.json()
-    #
-    #     print('check data', headers)
-    #
-    #     if 'id' in user_info_data:
-    #         user_id = user_info_data['id']
-    #         # Store the access token, refresh token, and user ID in the session
-    #         session['access_token'] = access_token
-    #         session['refresh_token'] = refresh_token
-    #         session['user_id'] = user_id
-    #
-    #         return redirect(url_for('show_ytmusic_playlists'))
-    #     else:
-    #         return "User ID not found in response."
-    # else:
-    #     return "Error occurred during authentication."
+        # if response.status_code == 200:
+        #     token_data = response.json()
+        #     access_token = token_data['access_token']
+        #     refresh_token = token_data['refresh_token']
+        #
+        #     # Get the user's ID from the access token
+        #     user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
+        #     headers = {
+        #         'Authorization': 'Bearer ' + access_token,
+        #     }
+        #
+        #     print("token1:", access_token)
+        #     print("token2:", refresh_token)
+        #     response = requests.get(user_info_url, headers=headers)
+        #     print("Response content:", response.content)
+        #     user_info_data = response.json()
+        #
+        #     print('check data', headers)
+        #
+        #     if 'id' in user_info_data:
+        #         user_id = user_info_data['id']
+        #         # Store the access token, refresh token, and user ID in the session
+        #         session['access_token'] = access_token
+        #         session['refresh_token'] = refresh_token
+        #         session['user_id'] = user_id
+        #
+        #         return redirect(url_for('show_ytmusic_playlists'))
+        #     else:
+        #         return "User ID not found in response."
+        # else:
+        #     return "Error occurred during authentication."
+
 
     @app.teardown_appcontext
     def teardown_appcontext(error):
