@@ -122,12 +122,12 @@ def create_app():
             refresh_token = token_data.get('refresh_token')
 
             if access_token:
-                # Store the access token, refresh token, and user ID in the session
+                # Store the access token and refresh token in the session
                 session['access_token'] = access_token
                 session['refresh_token'] = refresh_token
 
                 # Create a new instance of YTMusic with authentication
-                ytmusic = ytmusicapi.YTMusic(auth=session['access_token'], user=session['user_id'], language='en')
+                ytmusic = ytmusicapi.YTMusic(auth=session['access_token'], language='en')
 
                 try:
                     playlists = ytmusic.get_library_playlists()
