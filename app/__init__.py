@@ -1,5 +1,6 @@
 import secrets
 import urllib
+import ytmusicapi
 from urllib import parse
 
 import requests
@@ -115,35 +116,64 @@ def create_app():
 
         if response.status_code == 200:
             token_data = response.json()
-            access_token = token_data['access_token']
-            refresh_token = token_data['refresh_token']
+            print("Token data:", token_data)  # Print token data for debugging
 
-            # Get the user's ID from the access token
-            user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
-            headers = {
-                'Authorization': 'Bearer ' + access_token,
-            }
+            access_token = token_data.get('access_token')
+            refresh_token = token_data.get('refresh_token')
 
-            print("token1:", access_token)
-            print("token2:", refresh_token)
-            response = requests.get(user_info_url, headers=headers)
-            print("Response content:", response.content)
-            user_info_data = response.json()
-
-            print('check data', headers)
-
-            if 'id' in user_info_data:
-                user_id = user_info_data['id']
+            if access_token:
                 # Store the access token, refresh token, and user ID in the session
                 session['access_token'] = access_token
                 session['refresh_token'] = refresh_token
-                session['user_id'] = user_id
 
-                return redirect(url_for('show_ytmusic_playlists'))
+                # Create a new instance of YTMusic with authentication
+                ytmusic = ytmusicapi.YTMusic(auth=session['access_token'], user=session['user_id'], language='en')
+
+                try:
+                    playlists = ytmusic.get_library_playlists()
+                    print("Access token is valid.")
+
+                    return redirect(url_for('show_ytmusic_playlists'))
+                except Exception as e:
+                    print("Error occurred while checking access token validity:", str(e))
+
+                return "Access token is invalid or expired."
             else:
-                return "User ID not found in response."
+                return "Access token is missing in the response data."
         else:
             return "Error occurred during authentication."
+
+        # if response.status_code == 200:
+        #     token_data = response.json()
+        #     access_token = token_data['access_token']
+        #     refresh_token = token_data['refresh_token']
+        #
+        #     # Get the user's ID from the access token
+        #     user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
+        #     headers = {
+        #         'Authorization': 'Bearer ' + access_token,
+        #     }
+        #
+        #     print("token1:", access_token)
+        #     print("token2:", refresh_token)
+        #     response = requests.get(user_info_url, headers=headers)
+        #     print("Response content:", response.content)
+        #     user_info_data = response.json()
+        #
+        #     print('check data', headers)
+        #
+        #     if 'id' in user_info_data:
+        #         user_id = user_info_data['id']
+        #         # Store the access token, refresh token, and user ID in the session
+        #         session['access_token'] = access_token
+        #         session['refresh_token'] = refresh_token
+        #         session['user_id'] = user_id
+        #
+        #         return redirect(url_for('show_ytmusic_playlists'))
+        #     else:
+        #         return "User ID not found in response."
+        # else:
+        #     return "Error occurred during authentication."
 
 
     @app.teardown_appcontext
