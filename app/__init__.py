@@ -120,7 +120,7 @@ def create_app():
             # Get the user's ID from the access token
             user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
             headers = {
-                'Authorization': 'Bearer ' + access_token,
+                'Authorization': f'Bearer {access_token}',
             }
 
             response = requests.get(user_info_url, headers=headers)
