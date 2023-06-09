@@ -123,16 +123,16 @@ def create_app():
             refresh_token = token_data.get('refresh_token')
 
             if access_token:
-                # Create a YTMusic instance with the access token as the authentication
-                ytmusic = ytmusicapi.YTMusic(auth=access_token)
+                # Store the access token, refresh token, and user ID in the session
+                session['access_token'] = access_token
+                session['refresh_token'] = refresh_token
+
+                # Create a new instance of YTMusic with authentication
+                ytmusic = ytmusicapi.YTMusic(auth=session['access_token'])
 
                 try:
                     playlists = ytmusic.get_library_playlists()
                     print("Access token is valid.")
-
-                    # Store the access token, refresh token, and user ID in the session
-                    session['access_token'] = access_token
-                    session['refresh_token'] = refresh_token
 
                     return redirect(url_for('show_ytmusic_playlists'))
                 except Exception as e:
@@ -143,7 +143,6 @@ def create_app():
                 return "Access token is missing in the response data."
         else:
             return "Error occurred during authentication."
-
 
     @app.teardown_appcontext
     def teardown_appcontext(error):
