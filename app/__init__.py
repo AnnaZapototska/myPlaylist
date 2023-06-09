@@ -105,7 +105,7 @@ def create_app():
         token_params = {
             'client_id': '866143699543-g80lda2kbtp9ci0gskh3em31vvf2t0l0.apps.googleusercontent.com',
             'client_secret': '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',
-            'redirect_uri': 'https://my-playlist-project.onrender.com/ytmusic/callback',
+            'redirect_uri': request.url_root + 'ytmusic/callback',
             'code': code,
             'grant_type': 'authorization_code',
         }
@@ -118,7 +118,7 @@ def create_app():
             refresh_token = token_data['refresh_token']
 
             # Get the user's ID from the access token
-            user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
+            user_info_url = 'https://googleapis.com/oauth2/v2/userinfo'
             headers = {
                 'Authorization': f'Bearer {access_token}',
             }
