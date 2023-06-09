@@ -119,11 +119,11 @@ def create_app():
             refresh_token = token_data['refresh_token']
 
             # Get the user's ID from the access token
-            user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
+            user_info_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
             headers = {
-                'Authorization': 'Bearer ' + access_token,
+                'Authorization': 'Bearer ' + refresh_token,
                 'Content-type': 'application/json',
-                'Cookie': 'session_id=' + session['session_id'],
+
             }
 
             response = requests.get(user_info_url, headers=headers)
@@ -142,6 +142,7 @@ def create_app():
 
                 return redirect(url_for('show_ytmusic_playlists'))
             else:
+
                 return "User ID not found in response."
         else:
             return "Error occurred during authentication."
