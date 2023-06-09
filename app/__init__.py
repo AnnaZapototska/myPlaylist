@@ -20,7 +20,7 @@ def generate_session_id():
 
 
 def load_credentials():
-    with open('clientAPI.json.json') as file:
+    with open('clientAPI.json') as file:
         credentials = json.load(file)
     return credentials
 
