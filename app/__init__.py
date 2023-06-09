@@ -123,7 +123,7 @@ def create_app():
             refresh_token = token_data.get('refresh_token')
 
             if access_token:
-                # Check access token validity
+                # Create a YTMusic instance with the access token as the authentication
                 ytmusic = ytmusicapi.YTMusic(auth=access_token)
 
                 try:
@@ -143,6 +143,7 @@ def create_app():
                 return "Access token is missing in the response data."
         else:
             return "Error occurred during authentication."
+
 
     @app.teardown_appcontext
     def teardown_appcontext(error):
