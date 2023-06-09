@@ -118,8 +118,8 @@ def create_app():
             token_data = response.json()
             print("Token data:", token_data)  # Print token data for debugging
 
-            access_token = token_data.get('access_token')
-            refresh_token = token_data.get('refresh_token')
+            access_token = token_data['access_token']
+            refresh_token = token_data['refresh_token']
 
             if access_token:
                 # Store the access token and refresh token in the session
