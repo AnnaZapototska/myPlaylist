@@ -117,28 +117,32 @@ def create_app():
 
         if response.status_code == 200:
             token_data = response.json()
-            access_token = token_data['access_token']
-            refresh_token = token_data['refresh_token']
+            print("Token data:", token_data)  # Print token data for debugging
 
-            # Check access token validity
-            ytmusic = ytmusicapi.YTMusic(auth=access_token)
+            access_token = token_data.get('access_token')
+            refresh_token = token_data.get('refresh_token')
 
-            try:
-                playlists = ytmusic.get_library_playlists()
-                print("Access token is valid.")
+            if access_token:
+                # Check access token validity
+                ytmusic = ytmusicapi.YTMusic(auth=access_token)
 
-                # Store the access token, refresh token, and user ID in the session
-                session['access_token'] = access_token
-                session['refresh_token'] = refresh_token
+                try:
+                    playlists = ytmusic.get_library_playlists()
+                    print("Access token is valid.")
 
-                return redirect(url_for('show_ytmusic_playlists'))
-            except Exception as e:
-                print("Error occurred while checking access token validity:", str(e))
+                    # Store the access token, refresh token, and user ID in the session
+                    session['access_token'] = access_token
+                    session['refresh_token'] = refresh_token
 
-            return "Access token is invalid or expired."
+                    return redirect(url_for('show_ytmusic_playlists'))
+                except Exception as e:
+                    print("Error occurred while checking access token validity:", str(e))
+
+                return "Access token is invalid or expired."
+            else:
+                return "Access token is missing in the response data."
         else:
             return "Error occurred during authentication."
-
 
     @app.teardown_appcontext
     def teardown_appcontext(error):
