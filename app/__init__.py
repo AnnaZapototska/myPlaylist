@@ -98,7 +98,6 @@ def create_app():
     @app.route('/ytmusic/callback')
     def handle_ytmusic_callback():
         code = request.args.get('code')
-        print('code', code)
         session['session_id'] = generate_session_id()
 
         # Exchange the authorization code for an access token
@@ -119,33 +118,29 @@ def create_app():
             refresh_token = token_data['refresh_token']
 
             # Get the user's ID from the access token
-            user_info_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
+            user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
             headers = {
-                'Authorization': 'Bearer ' + refresh_token,
-                'Content-type': 'application/json',
-
+                'Authorization': 'Bearer ' + access_token,
             }
 
             response = requests.get(user_info_url, headers=headers)
             user_info_data = response.json()
-            print("User data", user_info_data)
+
+            print('check data', user_info_data)
 
             if 'id' in user_info_data:
                 user_id = user_info_data['id']
-                print("User ID:", user_id)
                 # Store the access token, refresh token, and user ID in the session
                 session['access_token'] = access_token
                 session['refresh_token'] = refresh_token
                 session['user_id'] = user_id
 
-                print("check 3")
-
                 return redirect(url_for('show_ytmusic_playlists'))
             else:
-
                 return "User ID not found in response."
         else:
             return "Error occurred during authentication."
+
 
     @app.teardown_appcontext
     def teardown_appcontext(error):
