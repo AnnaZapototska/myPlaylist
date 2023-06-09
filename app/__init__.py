@@ -7,6 +7,8 @@ import requests
 from flask import Flask, redirect, url_for, session, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from ytmusicapi import YTMusic
+import ytmusicapi
+
 import json
 
 db = SQLAlchemy()
@@ -118,28 +120,22 @@ def create_app():
             access_token = token_data['access_token']
             refresh_token = token_data['refresh_token']
 
-            # Get the user's ID from the access token
-            user_info_url = 'https://www.googleapis.com/oauth2/v2/userinfo'
-            headers = {
-                'Authorization': 'Bearer ' + access_token,
-            }
+            # Check access token validity
+            ytmusic = ytmusicapi.YTMusic(auth=access_token)
 
-            response = requests.get(user_info_url, headers=headers)
-            print("Response content:", response.content)
-            user_info_data = response.json()
+            try:
+                playlists = ytmusic.get_library_playlists()
+                print("Access token is valid.")
 
-            print('check data', headers)
-
-            if 'id' in user_info_data:
-                user_id = user_info_data['id']
                 # Store the access token, refresh token, and user ID in the session
                 session['access_token'] = access_token
                 session['refresh_token'] = refresh_token
-                session['user_id'] = user_id
 
                 return redirect(url_for('show_ytmusic_playlists'))
-            else:
-                return "User ID not found in response."
+            except Exception as e:
+                print("Error occurred while checking access token validity:", str(e))
+
+            return "Access token is invalid or expired."
         else:
             return "Error occurred during authentication."
 
